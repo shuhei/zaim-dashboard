@@ -6,12 +6,10 @@
     "start": "node app"
   },
   "engines": {
-    "node": "0.9.x",
+    "node": "0.8.x",
     "npm": "1.1.x"
   },
   "dependencies": {
-    "express": "3.0.6",
     "jade": "*",
-    "oauth": "~0.9.8"
   }
 }
