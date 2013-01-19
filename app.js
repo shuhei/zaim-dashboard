@@ -14,8 +14,8 @@ var express = require('express')
 var oa = new OAuth(
   'https://api.zaim.net/v1/auth/request',
   'https://api.zaim.net/v1/auth/access',
-  process.env.CONSUMER_KEY,
-  process.env.CONSUMER_SECRET,
+  process.env.OAUTH_CONSUMER_KEY,
+  process.env.OAUTH_CONSUMER_SECRET,
   '1.0',
   'http://zaim-dashboard.herokuapp.com/auth/callback',
   'HMAC-SHA1'
@@ -49,7 +49,7 @@ app.get('/auth', function (req, res) {
   oa.getOAuthRequestToken(function (err, oauth_token, oauth_token_secret, results) {
     if (err) {
       console.log(err);
-      return res.send('Something went wrong.');
+      return res.send(err.statusCode, 'Something went wrong.');
     }
     req.session.oauth = {};
     req.session.oauth.token = oauth_token;
@@ -66,7 +66,7 @@ app.get('/auth/callback', function (req, res, next) {
       function (err, oauth_access_token, oauth_access_token_secret, results) {
         if (err) {
           console.log(err);
-          return res.send('Something went wrong.');
+          return res.send(err.statusCode, 'Something went wrong.');
         }
         req.session.oauth.access_token = oauth_access_token;
         req.session.oauth.access_token_secret = oauth_access_token_secret;
