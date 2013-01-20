@@ -56,7 +56,6 @@ exports.authCallback = function (req, res, next) {
   }
 };
 
-var MONEY_INDEX_URL = 'https://api.zaim.net/v1/money/index.json';
 function Zaim(accessToken, accessTokenSecret) {
   this.accessToken = accessToken;
   this.accessTokenSecret = accessTokenSecret;
@@ -73,13 +72,22 @@ Zaim.prototype._request = function (url, method, callback) {
     }
   );
 };
-Zaim.prototype.getMoneyIndex = function (options, callback) {
-  if (callback == null && typeof options === 'function') {
-    callback = options;
-    options = {};
-  }
-  var url = MONEY_INDEX_URL + '?' + querystring.stringify(options);
+Zaim.prototype._getRequest = function (url, options, callback) {
+  var urlWithParam = url + '?' + querystring.stringify(options);
   this._request(url, 'GET', callback);
+};
+// REST APIs
+Zaim.prototype.getMoneyIndex = function (options, callback) {
+  this._getRequest('https://api.zaim.net/v1/money/index.json', options, callback);
+};
+Zaim.prototype.getCategoryPay = function (options, callback) {
+  this._getRequest('https://api.zaim.net/v1/category/pay.json', options, callback);
+};
+Zaim.prototype.getCategoryIncome = function (options, callback) {
+  this._getRequest('https://api.zaim.net/v1/category/income.json', options, callback);
+};
+Zaim.prototype.getGenrePay = function (options, callback) {
+  this._getRequest('https://api.zaim.net/v1/genre/pay.json', options, callback);
 };
 exports.Zaim = Zaim;
 
