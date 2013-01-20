@@ -15,10 +15,11 @@ exports.index = function(req, res) {
         if (err) {
           return res.send(err.statusCode, err);
         }
-        res.render('index', { title: 'Zaim Dashboard', moneys: data })
+        var moneys = JSON.parse(data).money;
+        res.render('index', { title: 'Zaim Dashboard', moneys: moneys })
       }
     );
   } else {
-    res.render('index', { title: 'Zaim Dashboard', moneys: '' });
+    res.render('index', { title: 'Zaim Dashboard', moneys: [] });
   }
 };

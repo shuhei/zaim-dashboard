@@ -3,4 +3,26 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
-  p= moneys
+  - if moneys && moneys.length > 0
+    table
+      tr
+        th ID
+        th Type
+        th Date
+        th Category ID
+        th Genre ID
+        th Price
+        th Comment
+        th Place ID
+        th Place
+      each money in moneys
+        tr
+          td= money.id
+          td= money.type
+          td= money.date
+          td= money.category_id
+          td= money.genre_id
+          td= money.price
+          td= money.comment
+          td= money.place_id
+          td= money.place
