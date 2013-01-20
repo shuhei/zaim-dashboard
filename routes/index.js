@@ -6,7 +6,7 @@ var oa = require('../zaim').oa;
 
 exports.index = function(req, res) {
   if (req.session.oauth && req.session.oauth.access_token) {
-    var MONEY_INDEX_URL = 'https://api.zaim.net/v1/money/index.json';
+    var MONEY_INDEX_URL = 'https://api.zaim.net/v1/money/index.json?limit=100';
     oa.getProtectedResource(
       MONEY_INDEX_URL,
       'GET',
