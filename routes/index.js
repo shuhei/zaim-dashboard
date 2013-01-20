@@ -11,9 +11,7 @@ exports.index = function(req, res) {
       req.session.oauth.access_token_secret
     );
     zaim.getMoneyIndex({ limit: 100 }, function (err, data) {
-      if (err) {
-        return res.send(err.statusCode, err);
-      }
+      if (err) return res.send(err.statusCode, err);
       res.render('index', { title: 'Zaim Dashboard', moneys: data.money });
     });
   } else {

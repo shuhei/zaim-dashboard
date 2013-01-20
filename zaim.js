@@ -74,7 +74,7 @@ Zaim.prototype._request = function (url, method, callback) {
 };
 Zaim.prototype._getRequest = function (url, options, callback) {
   var urlWithParam = url + '?' + querystring.stringify(options);
-  this._request(url, 'GET', callback);
+  this._request(urlWithParam, 'GET', callback);
 };
 // REST APIs
 Zaim.prototype.getMoneyIndex = function (options, callback) {
