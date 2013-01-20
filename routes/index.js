@@ -5,6 +5,13 @@ var Zaim = require('../zaim').Zaim;
  * GET home page.
  */
 
+function toObjWithId(array) {
+  return array.reduce(function (dict, item) {
+    dict[item.id] = item;
+    return dict;
+  }, {});
+}
+
 exports.index = function(req, res) {
   if (req.session.oauth && req.session.oauth.access_token) {
     var zaim = new Zaim(
@@ -24,19 +31,14 @@ exports.index = function(req, res) {
     }, function (err, results) {
       if (err) return res.send(err.statusCode, err);
       var moneys = results.moneys.money;
-      var categories = results.categories.categories.reduce(function (dict, cat) {
-        dict[cat.id] = cat;
-        return dict;
-      }, {});
-      var genres = results.genres.genres.reduce(function (dict, gen) {
-        dict[gen.id] = gen;
-        gen.category = categories[gen.category_id];
-        return dict;
-      }, {});
+      var categories = toObjWithId(results.categories.categories);
+      var genres = toObjWithId(results.genres.genres);
       var none = { id: 0, title: '' };
       moneys.forEach(function (money) {
-        money.category = categories[money.category_id] || none;
-        money.genre = genres[money.genre_id] || none;
+        if (money.type === 'pay') {
+          money.category = categories[money.category_id] || none;
+          money.genre = genres[money.genre_id] || none;
+        }
       });
       res.render('index', { title: 'Zaim Dashboard', moneys: moneys });
     });
