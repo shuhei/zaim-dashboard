@@ -21,13 +21,13 @@ app.configure(function () {
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
-  app.use(express.cookieParser('your secret here'));
+  app.use(express.cookieParser(process.env.COOKIE_SECRET || 'your secret here'));
   app.use(express.session());
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
 });
 
-app.configure('development', function(){
+app.configure('development', function () {
   app.use(express.errorHandler());
 });
 
@@ -38,6 +38,6 @@ app.get('/users', user.list);
 app.get('/auth', zaim.auth);
 app.get('/auth/callback', zaim.authCallback);
 
-http.createServer(app).listen(app.get('port'), function(){
+http.createServer(app).listen(app.get('port'), function () {
   console.log("Express server listening on port " + app.get('port'));
 });
