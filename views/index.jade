@@ -3,25 +3,25 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
-  - if (moneys && moneys.length > 0)
+  - if (moneys)
     table
       tr
         th ID
         th Type
         th Date
-        th Category ID
-        th Genre ID
+        th Category
+        th Genre
         th Price
         th Comment
         th Place ID
         th Place
-      each money in moneys
+      each money in moneys.money
         tr
           td= money.id
           td= money.type
           td= money.date
-          td= money.category_id
-          td= money.genre_id
+          td= money.category.title
+          td= money.genre.title
           td= money.price
           td= money.comment
           td= money.place_id

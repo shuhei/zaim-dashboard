@@ -1,3 +1,4 @@
+var async = require('async');
 var Zaim = require('../zaim').Zaim;
 
 /*
@@ -10,11 +11,33 @@ exports.index = function(req, res) {
       req.session.oauth.access_token,
       req.session.oauth.access_token_secret
     );
-    zaim.getMoneyIndex({ limit: 100 }, function (err, data) {
+    async.parallel({
+      moneys: function (callback) {
+        zaim.getMoneyIndex({ limit: 100 }, callback);
+      },
+      categories: function (callback) {
+        zaim.getCategoryPay({}, callback);
+      },
+      genres: function (callback) {
+        zaim.getGenrePay({}, callback);
+      }
+    }, function (err, results) {
       if (err) return res.send(err.statusCode, err);
-      res.render('index', { title: 'Zaim Dashboard', moneys: data.money });
+      var moneys = results.moneys.money;
+      var categories = results.categories.categories.reduce(function (dict, cat) {
+        dict[cat.id] = cat;
+      }, {});
+      var genres = results.genres.genres.reduce(function (dict, gen) {
+        dict[gen.id] = gen;
+        gen.category = categories[gen.category_id];
+      }, {});
+      moneys.forEach(function (money) {
+        money.category = categories[money.category_id];
+        money.genre = genres[money.genre_id];
+      });
+      res.render('index', { title: 'Zaim Dashboard', moneys: moneys });
     });
   } else {
-    res.render('index', { title: 'Zaim Dashboard', moneys: [] });
+    res.render('index', { title: 'Zaim Dashboard' });
   }
 };
