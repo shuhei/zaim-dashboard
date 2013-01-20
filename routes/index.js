@@ -38,6 +38,9 @@ exports.index = function(req, res) {
         if (money.type === 'pay') {
           money.category = categories[money.category_id] || none;
           money.genre = genres[money.genre_id] || none;
+        } else {
+          money.category = none;
+          money.genre = none;
         }
       });
       res.render('index', { title: 'Zaim Dashboard', moneys: moneys });
