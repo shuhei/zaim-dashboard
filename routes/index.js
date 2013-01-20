@@ -33,9 +33,10 @@ exports.index = function(req, res) {
         gen.category = categories[gen.category_id];
         return dict;
       }, {});
+      var none = { id: 0, title: '' };
       moneys.forEach(function (money) {
-        money.category = categories[money.category_id];
-        money.genre = genres[money.genre_id];
+        money.category = categories[money.category_id] || none;
+        money.genre = genres[money.genre_id] || none;
       });
       res.render('index', { title: 'Zaim Dashboard', moneys: moneys });
     });
