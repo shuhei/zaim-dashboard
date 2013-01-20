@@ -1,4 +1,5 @@
 var OAuth = require('oauth').OAuth;
+var querystring = require('querystring');
 
 var REQUEST_URL = 'https://api.zaim.net/v1/auth/request';
 var ACCESS_URL = 'https://api.zaim.net/v1/auth/access';
