@@ -54,3 +54,29 @@ exports.authCallback = function (req, res, next) {
     res.send(403, { error: 'Forbidden.' });
   }
 };
+
+var MONEY_INDEX_URL = 'https://api.zaim.net/v1/money/index.json';
+function Zaim(accessToken, accessTokenSecret) {
+  this.accessToken = accessToken;
+  this.accessTokenSecret = accessTokenSecret;
+};
+Zaim.prototype.getMoneyIndex = function (options, callback) {
+  if (callback == null && typeof options === 'function') {
+    callback = options
+    options = {};
+  }
+  oa.getProtectedResource(
+    MONEY_INDEX_URL + '?' + querystring.stringify(options),
+    'GET',
+    this.accessToken,
+    this.accessTokenSecret,
+    function (err, data, response) {
+      if (err) {
+        return callback(err, data);
+      }
+      callback(err, JSON.parse(data));
+    }
+  );
+};
+exports.Zaim = Zaim;
+

@@ -1,4 +1,4 @@
-var oa = require('../zaim').oa;
+var Zaim = require('../zaim').Zaim;
 
 /*
  * GET home page.
@@ -6,20 +6,16 @@ var oa = require('../zaim').oa;
 
 exports.index = function(req, res) {
   if (req.session.oauth && req.session.oauth.access_token) {
-    var MONEY_INDEX_URL = 'https://api.zaim.net/v1/money/index.json?limit=100';
-    oa.getProtectedResource(
-      MONEY_INDEX_URL,
-      'GET',
+    var zaim = new Zaim(
       req.session.oauth.access_token,
-      req.session.oauth.access_token_secret,
-      function (err, data, response) {
-        if (err) {
-          return res.send(err.statusCode, err);
-        }
-        var moneys = JSON.parse(data).money;
-        res.render('index', { title: 'Zaim Dashboard', moneys: moneys })
-      }
+      req.session.oauth.access_token_secret
     );
+    zaim.getMoneyIndex({ limit: 100 }, function (err, data) {
+      if (err) {
+        return res.send(err.statusCode, err);
+      }
+      res.render('index', { title: 'Zaim Dashboard', moneys: data.money });
+    });
   } else {
     res.render('index', { title: 'Zaim Dashboard', moneys: [] });
   }
