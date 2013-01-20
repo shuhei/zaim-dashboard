@@ -6,26 +6,20 @@ block content
   - if (moneys && moneys.length > 0)
     table
       tr
-        th ID
         th Type
         th Date
         th Category
         th Genre
         th Price
         th Comment
-        th Place ID
-        th Place
       each money in moneys
-        tr
-          td= money.id
+        tr(id=money.id, class=money.type)
           td= money.type
           td= money.date
           td= money.category.title
           td= money.genre.title
           td= money.price
           td= money.comment
-          td= money.place_id
-          td= money.place
   - else
     p
       a(href='/auth') Authrorize
