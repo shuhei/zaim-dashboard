@@ -26,10 +26,12 @@ exports.index = function(req, res) {
       var moneys = results.moneys.money;
       var categories = results.categories.categories.reduce(function (dict, cat) {
         dict[cat.id] = cat;
+        return dict;
       }, {});
       var genres = results.genres.genres.reduce(function (dict, gen) {
         dict[gen.id] = gen;
         gen.category = categories[gen.category_id];
+        return dict;
       }, {});
       moneys.forEach(function (money) {
         money.category = categories[money.category_id];
