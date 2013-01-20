@@ -12,13 +12,13 @@ var express = require('express')
 ;
 
 var oa = new OAuth(
-  'https://api.zaim.net/v1/auth/request',
-  'https://api.zaim.net/v1/auth/access',
-  process.env.OAUTH_CONSUMER_KEY,
-  process.env.OAUTH_CONSUMER_SECRET,
-  '1.0',
-  'http://zaim-dashboard.herokuapp.com/auth/callback',
-  'HMAC-SHA1'
+  'https://api.zaim.net/v1/auth/request', // request URL
+  'https://api.zaim.net/v1/auth/access', // access URL
+  process.env.OAUTH_CONSUMER_KEY, // consumer key
+  process.env.OAUTH_CONSUMER_SECRET, // consumer secret
+  '1.0', // version
+  'http://zaim-dashboard.herokuapp.com/auth/callback', // authorize callback
+  'HMAC-SHA1' // signature method
 );
 var AUTH_URL = 'https://www.zaim.net/users/auth';
 
@@ -45,6 +45,13 @@ app.configure('development', function(){
 app.get('/', routes.index);
 app.get('/users', user.list);
 
+// OAuth authorization
+// 1. Get a request token.
+// 2. Redirect user to the authorize page with the request token.
+// 3. User authorizes this app.
+// 4. User is redirected to the callback URL with the verifier.
+// 5. Get an access token using the verifier.
+
 app.get('/auth', function (req, res) {
   oa.getOAuthRequestToken(function (err, oauth_token, oauth_token_secret, results) {
     if (err) {
@@ -54,7 +61,7 @@ app.get('/auth', function (req, res) {
     req.session.oauth = {};
     req.session.oauth.token = oauth_token;
     req.session.oauth.token_secret = oauth_token_secret;
-    res.redirect(AUTH_URL);
+    res.redirect(AUTH_URL + '?oauth_token=' + oauth_token);
   });
 });
 
