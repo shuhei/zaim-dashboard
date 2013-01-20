@@ -63,7 +63,7 @@ function Zaim(accessToken, accessTokenSecret) {
 };
 Zaim.prototype.getMoneyIndex = function (options, callback) {
   if (callback == null && typeof options === 'function') {
-    callback = options
+    callback = options;
     options = {};
   }
   oa.getProtectedResource(
