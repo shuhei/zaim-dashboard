@@ -38,6 +38,6 @@ exports.index = function(req, res) {
       res.render('index', { title: 'Zaim Dashboard', moneys: moneys });
     });
   } else {
-    res.render('index', { title: 'Zaim Dashboard' });
+    res.render('index', { title: 'Zaim Dashboard', moneys: [] });
   }
 };
