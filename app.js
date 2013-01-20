@@ -11,16 +11,19 @@ var express = require('express')
   , OAuth = require('oauth').OAuth
 ;
 
+var REQUEST_URL = 'https://api.zaim.net/v1/auth/request';
+var ACCESS_URL = 'https://api.zaim.net/v1/auth/access';
+var AUTH_URL = 'https://www.zaim.net/users/auth';
+
 var oa = new OAuth(
-  'https://api.zaim.net/v1/auth/request', // request URL
-  'https://api.zaim.net/v1/auth/access', // access URL
+  REQUEST_URL, // request URL
+  ACCESS_URL, // access URL
   process.env.OAUTH_CONSUMER_KEY, // consumer key
   process.env.OAUTH_CONSUMER_SECRET, // consumer secret
   '1.0', // version
   'http://zaim-dashboard.herokuapp.com/auth/callback', // authorize callback
   'HMAC-SHA1' // signature method
 );
-var AUTH_URL = 'https://www.zaim.net/users/auth';
 
 var app = express();
 
@@ -77,8 +80,7 @@ app.get('/auth/callback', function (req, res, next) {
         }
         req.session.oauth.access_token = oauth_access_token;
         req.session.oauth.access_token_secret = oauth_access_token_secret;
-        console.log(results);
-        res.send('Worked.');
+        res.send('Successfully got access token.');
       }
     );
   } else {
