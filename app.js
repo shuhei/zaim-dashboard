@@ -27,10 +27,11 @@ var oa = new OAuth(
 
 var app = express();
 
-app.configure(function(){
+app.configure(function () {
   app.set('port', process.env.PORT || 3000);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
+  app.set('oa', oa);
   app.use(express.favicon());
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
@@ -80,7 +81,7 @@ app.get('/auth/callback', function (req, res, next) {
         }
         req.session.oauth.access_token = oauth_access_token;
         req.session.oauth.access_token_secret = oauth_access_token_secret;
-        res.send('Successfully got access token.');
+        res.redirect('/');
       }
     );
   } else {
