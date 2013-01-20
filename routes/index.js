@@ -4,7 +4,7 @@
  */
 
 exports.index = function(req, res) {
-  if (req.session.oauth.access_token) {
+  if (res.session.oauth && req.session.oauth.access_token) {
     var MONEY_INDEX_URL = 'https://api.zaim.net/v1/money/index.json';
     app.get('oa').getProtectedResource(
       MONEY_INDEX_URL,
