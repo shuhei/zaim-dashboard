@@ -61,16 +61,10 @@ function Zaim(accessToken, accessTokenSecret) {
   this.accessToken = accessToken;
   this.accessTokenSecret = accessTokenSecret;
 };
-Zaim.prototype.getMoneyIndex = function (options, callback) {
-  if (callback == null && typeof options === 'function') {
-    callback = options;
-    options = {};
-  }
+Zaim.prototype._request = function (url, method, callback) {
   oa.getProtectedResource(
-    MONEY_INDEX_URL + '?' + querystring.stringify(options),
-    'GET',
-    this.accessToken,
-    this.accessTokenSecret,
+    url, method,
+    this.accessToken, this.accessTokenSecret,
     function (err, data, response) {
       if (err) {
         return callback(err, data);
@@ -78,6 +72,14 @@ Zaim.prototype.getMoneyIndex = function (options, callback) {
       callback(err, JSON.parse(data));
     }
   );
+};
+Zaim.prototype.getMoneyIndex = function (options, callback) {
+  if (callback == null && typeof options === 'function') {
+    callback = options;
+    options = {};
+  }
+  var url = MONEY_INDEX_URL + '?' + querystring.stringify(options);
+  this._request(url, 'GET', callback);
 };
 exports.Zaim = Zaim;
 
