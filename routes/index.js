@@ -1,4 +1,4 @@
-var oa = require('../oa');
+var oa = require('../zaim').oa;
 
 /*
  * GET home page.

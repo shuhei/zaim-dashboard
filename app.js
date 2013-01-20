@@ -8,10 +8,8 @@ var express = require('express')
   , user = require('./routes/user')
   , http = require('http')
   , path = require('path')
-  , oa = require('./oa')
+  , zaim = require('./zaim')
 ;
-
-var AUTH_URL = 'https://www.zaim.net/users/auth';
 
 var app = express();
 
@@ -19,7 +17,6 @@ app.configure(function () {
   app.set('port', process.env.PORT || 3000);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
-  app.set('oa', oa);
   app.use(express.favicon());
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
@@ -37,46 +34,9 @@ app.configure('development', function(){
 app.get('/', routes.index);
 app.get('/users', user.list);
 
-// OAuth authorization
-// 1. Get a request token.
-// 2. Redirect user to the authorize page with the request token.
-// 3. User authorizes this app.
-// 4. User is redirected to the callback URL with the verifier.
-// 5. Get an access token using the verifier.
-
-app.get('/auth', function (req, res) {
-  oa.getOAuthRequestToken(function (err, oauth_token, oauth_token_secret, results) {
-    if (err) {
-      console.log(err);
-      return res.send(err.statusCode, 'Something went wrong.');
-    }
-    req.session.oauth = {};
-    req.session.oauth.token = oauth_token;
-    req.session.oauth.token_secret = oauth_token_secret;
-
-    res.redirect(AUTH_URL + '?oauth_token=' + oauth_token);
-  });
-});
-
-app.get('/auth/callback', function (req, res, next) {
-  if (req.session.oauth) {
-    req.session.oauth.verifier = req.query.oauth_verifier;
-    var oauth = req.session.oauth;
-    oa.getOAuthAccessToken(oauth.token, oauth.token_secret, oauth.verifier,
-      function (err, oauth_access_token, oauth_access_token_secret, results) {
-        if (err) {
-          console.log(err);
-          return res.send(err.statusCode, 'Something went wrong.');
-        }
-        req.session.oauth.access_token = oauth_access_token;
-        req.session.oauth.access_token_secret = oauth_access_token_secret;
-        res.redirect('/');
-      }
-    );
-  } else {
-    res.send(403, { error: 'Forbidden.' });
-  }
-});
+// Zaim authorization
+app.get('/auth', zaim.auth);
+app.get('/auth/callback', zaim.authCallback);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
